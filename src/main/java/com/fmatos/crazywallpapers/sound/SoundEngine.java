@@ -19,18 +19,12 @@ public class SoundEngine {
 	private int mSoundId;
 	private boolean mCanPlayAudio;
 
-	private int mVolume = 6;
-	private final int mVolumeMax = 10;
-	private final int mVolumeMin = 0;
-
 	private final Context context;
 
 	public SoundEngine(Context context) {
 		this.context = context;
 
 		mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-
-//		loadSoundPool();
 
 		// Request audio focus
 		int result = mAudioManager.requestAudioFocus(afChangeListener,
@@ -47,7 +41,7 @@ public class SoundEngine {
 		mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
 
 		// Load bubble popping sound into the SoundPool
-		mSoundId = mSoundPool.load(context, R.raw.meat_on_the_grill, 1);
+		mSoundId = mSoundPool.load(context, R.raw.cling_01_321285, 1);
 
 		// Set an OnLoadCompleteListener on the SoundPool
 		mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
@@ -70,8 +64,6 @@ public class SoundEngine {
 	}
 
 	public void play() {
-//		AudioManager mAudioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
-//		mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
 
 		Thread t = new Thread(){
 			@Override

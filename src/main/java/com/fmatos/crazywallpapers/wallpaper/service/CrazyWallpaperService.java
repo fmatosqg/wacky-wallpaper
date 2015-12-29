@@ -13,26 +13,23 @@ import com.fmatos.crazywallpapers.sound.SoundEngine;
 public class CrazyWallpaperService extends WallpaperService {
 
 	private static final String TAG = CrazyWallpaperService.class.getSimpleName();
-	private CrazyWallpaperEngine engine;
-
 
 	@Override
 	public Engine onCreateEngine() {
-		engine = new CrazyWallpaperEngine();
-		return engine;
+		return new CrazyWallpaperEngine();
 	}
-
 
 	private class CrazyWallpaperEngine extends Engine {
 
 		private static final float MAGIC_SIZE = 30f; // size of the brush
 		private final HeatManager heatManager;
 		private final Paint paint;
+		private final SoundEngine soundEngine;
 
 		public CrazyWallpaperEngine() {
 
-			SoundEngine soundEngine = new SoundEngine(getApplicationContext());
-			soundEngine.onResume(); // TODO put in proper place
+			soundEngine = new SoundEngine(getApplicationContext());
+
 			heatManager = new HeatManager(soundEngine);
 
 			paint = new Paint();
@@ -44,6 +41,18 @@ public class CrazyWallpaperService extends WallpaperService {
 
 			paint.setMaskFilter(new BlurMaskFilter(MAGIC_SIZE*1.5f, BlurMaskFilter.Blur.NORMAL));
 
+		}
+
+		@Override
+		public void onCreate(SurfaceHolder surfaceHolder) {
+			super.onCreate(surfaceHolder);
+			soundEngine.onResume();
+		}
+
+		@Override
+		public void onDestroy() {
+			super.onDestroy();
+			soundEngine.onPause();
 		}
 
 		@Override
