@@ -1,0 +1,64 @@
+repositories {
+    jcenter()
+    mavenLocal()
+}
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenLocal()
+
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.5.0'
+        classpath 'com.jakewharton.sdkmanager:gradle-plugin:0.12.+'
+    }
+}
+apply plugin: 'android-sdk-manager'
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 18
+    buildToolsVersion "20"  // run $ANDROID_HOME/tools/android and check which build tools are currently installed
+
+    defaultConfig {
+        applicationId "com.fmatos.crazywallpapers"
+        minSdkVersion 18
+        targetSdkVersion 18
+        versionCode 7
+        versionName "0.0.1" // Amazon requires numbers only
+
+        sourceSets {
+            main {
+                manifest.srcFile 'AndroidManifest.xml'
+                res.srcDirs = ['res']
+            }
+            test.java.srcDirs = ['src/test/java', 'build/generated/source/debug']
+        }
+    }
+
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'// this is required from butterknife
+        exclude 'META-INF/NOTICE.txt'
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    testOptions {
+        //https://sites.google.com/a/android.com/tools/tech-docs/unit-testing-support
+        unitTests.returnDefaultValues = true // allows non mocked methods to avoid failing
+    }
+
+}
+
+// checkout butterknife configuration when setting up pro guard at http://jakewharton.github.io/butterknife/
+
+dependencies {
+
+    testCompile 'org.mockito:mockito-core:1.10.19'
+    testCompile 'org.robolectric:robolectric:3.0'
+    compile 'com.android.support:appcompat-v7:18.0.0'
+}
