@@ -29,32 +29,9 @@ android {
         versionCode 7
         versionName "0.0.1" // Amazon requires numbers only
 
-        sourceSets {
-            main {
-                manifest.srcFile 'AndroidManifest.xml'
-                res.srcDirs = ['res']
-            }
-            test.java.srcDirs = ['src/test/java', 'build/generated/source/debug']
-        }
-    }
-
-
-    packagingOptions {
-        exclude 'META-INF/services/javax.annotation.processing.Processor'// this is required from butterknife
-        exclude 'META-INF/NOTICE.txt'
-    }
-    lintOptions {
-        abortOnError false
-    }
-
-    testOptions {
-        //https://sites.google.com/a/android.com/tools/tech-docs/unit-testing-support
-        unitTests.returnDefaultValues = true // allows non mocked methods to avoid failing
     }
 
 }
-
-// checkout butterknife configuration when setting up pro guard at http://jakewharton.github.io/butterknife/
 
 dependencies {
 
