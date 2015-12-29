@@ -8,7 +8,7 @@ import android.service.wallpaper.WallpaperService;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
-import com.fmatos.crazywallpapers.sound.SoundEngine;
+import com.fmatos.crazywallpapers.sound.SoundFacade;
 
 public class CrazyWallpaperService extends WallpaperService {
 
@@ -24,13 +24,13 @@ public class CrazyWallpaperService extends WallpaperService {
 		private static final float MAGIC_SIZE = 30f; // size of the brush
 		private final HeatManager heatManager;
 		private final Paint paint;
-		private final SoundEngine soundEngine;
+		private final SoundFacade soundFacade;
 
 		public CrazyWallpaperEngine() {
 
-			soundEngine = new SoundEngine(getApplicationContext());
+			soundFacade = new SoundFacade(getApplicationContext());
 
-			heatManager = new HeatManager(soundEngine);
+			heatManager = new HeatManager(soundFacade);
 
 			paint = new Paint();
 			paint.setAntiAlias(true);
@@ -46,13 +46,13 @@ public class CrazyWallpaperService extends WallpaperService {
 		@Override
 		public void onCreate(SurfaceHolder surfaceHolder) {
 			super.onCreate(surfaceHolder);
-			soundEngine.onResume();
+			soundFacade.onResume();
 		}
 
 		@Override
 		public void onDestroy() {
 			super.onDestroy();
-			soundEngine.onPause();
+			soundFacade.onPause();
 		}
 
 		@Override

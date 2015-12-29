@@ -5,7 +5,7 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
 
-import com.fmatos.crazywallpapers.R;
+import java.lang.ref.WeakReference;
 
 /**
  * Created by fdematos on 29/12/15.
@@ -16,13 +16,14 @@ public class SoundEngine {
 
 	private SoundPool mSoundPool;
 	private AudioManager mAudioManager;
-	private int mSoundId;
+//	private int mSoundId;
 	private boolean mCanPlayAudio;
 
-	private final Context context;
+	private final WeakReference<Context> context;
 
 	public SoundEngine(Context context) {
-		this.context = context;
+
+		this.context = new WeakReference<Context>(context);;
 
 		mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -39,9 +40,6 @@ public class SoundEngine {
 	private void loadSoundPool() {
 		// Create a SoundPool
 		mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-
-		// Load bubble popping sound into the SoundPool
-		mSoundId = mSoundPool.load(context, R.raw.cling_01_321285, 1);
 
 		// Set an OnLoadCompleteListener on the SoundPool
 		mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
@@ -63,7 +61,7 @@ public class SoundEngine {
 
 	}
 
-	public void play() {
+	public void play(final int soundId) {
 
 		Thread t = new Thread(){
 			@Override
@@ -71,7 +69,7 @@ public class SoundEngine {
 				if (mCanPlayAudio) {
 					if (mSoundPool != null ) {
 						float volume = 0.15f;
-						mSoundPool.play(mSoundId, volume,volume,
+						mSoundPool.play(soundId, volume,volume,
 								1, 0, 1.0f);
 					} else {
 						Log.w(TAG,"NULLLLLLL");
@@ -94,8 +92,8 @@ public class SoundEngine {
 				mAudioManager.abandonAudioFocus(afChangeListener);
 				mCanPlayAudio = false;
 				Log.d(TAG,"Audio focus loss");
-			} else {
-				Log.d(TAG,"Audio focus != loss " + focusChange);
+			} else if ( focusChange == AudioManager.AUDIOFOCUS_GAIN){
+				Log.d(TAG,"Audio focus gain " + focusChange);
 			}
 
 		}
@@ -113,7 +111,7 @@ public class SoundEngine {
 	public void onPause() {
 
 		if (null != mSoundPool) {
-			mSoundPool.unload(mSoundId);
+
 			mSoundPool.release();
 			mSoundPool = null;
 
@@ -124,6 +122,10 @@ public class SoundEngine {
 		mAudioManager.unloadSoundEffects();
 
 		Log.d(TAG, "Sound pool pause unloaded");
+	}
+
+	public SoundPool getmSoundPool() {
+		return mSoundPool;
 	}
 
 }
