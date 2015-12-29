@@ -20,13 +20,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 18
-    buildToolsVersion "20"  // run $ANDROID_HOME/tools/android and check which build tools are currently installed
+    buildToolsVersion "20"
 
     defaultConfig {
         applicationId "com.fmatos.crazywallpapers"
         minSdkVersion 18
         targetSdkVersion 18
-        versionCode 7
+        versionCode 1
         versionName "0.0.1" // Amazon requires numbers only
 
     }

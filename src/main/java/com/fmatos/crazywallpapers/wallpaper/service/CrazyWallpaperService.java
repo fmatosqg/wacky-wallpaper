@@ -58,7 +58,8 @@ public class CrazyWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 			super.onSurfaceChanged(holder, format, width, height);
-			draw();
+			heatManager.onSurfaceChanged(width,height);
+			draw(0);
 		}
 
 		@Override
@@ -68,18 +69,24 @@ public class CrazyWallpaperService extends WallpaperService {
 
 			if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
 //				Log.i(TAG, "Down at " + event.getX() + "," + event.getY());
-				heatManager.addPoint(event.getX(), event.getY());
+				int count = heatManager.addPoint(event.getX(), event.getY());
 
-				draw(); // TODO need efficient worker thread here
+				draw(count); // TODO need efficient worker thread here
 			}
 		}
 
-		private void draw() {
+		private void draw(int count) {
 			SurfaceHolder holder = getSurfaceHolder();
 			Canvas canvas = holder.lockCanvas();
 
 			try {
 				canvas.drawColor(Color.BLACK);
+
+				if ( count < 5 ) {
+					paint.setColor(Color.BLUE);
+				} else {
+					paint.setColor(Color.RED);
+				}
 
 				for ( Point point : heatManager.getHeatMap() ) {
 					canvas.drawCircle(point.getX(), point.getY(), 20.0f, paint);

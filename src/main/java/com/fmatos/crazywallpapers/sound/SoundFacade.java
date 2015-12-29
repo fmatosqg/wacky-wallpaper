@@ -18,6 +18,9 @@ public class SoundFacade {
 	private final WeakReference<Context> context;
 
 	private final List<Integer> clingSounds;
+	private Integer burnId;
+	private Integer glassId;
+	private Integer wumpusId;
 
 	public SoundFacade(Context context) {
 		soundEngine = new SoundEngine(context);
@@ -39,7 +42,13 @@ public class SoundFacade {
 
 	private void unloadSoundPool() {
 		if (soundEngine.getmSoundPool() != null) {
-//			soundEngine.getmSoundPool().unload(mSoundId);
+			for ( Integer clingId: clingSounds) {
+				soundEngine.getmSoundPool().unload(clingId);
+			}
+
+			soundEngine.getmSoundPool().unload(wumpusId);
+			soundEngine.getmSoundPool().unload(glassId);
+			soundEngine.getmSoundPool().unload(burnId);
 		}
 	}
 
@@ -51,6 +60,10 @@ public class SoundFacade {
 		clingSounds.add(loadSoundResource(R.raw.cling_04_321288));
 		clingSounds.add(loadSoundResource(R.raw.cling_05_321287));
 		clingSounds.add(loadSoundResource(R.raw.cling_06_321290));
+
+		burnId = loadSoundResource(R.raw.meat_on_the_grill_233294);
+		glassId = loadSoundResource(R.raw.breaking_a_glass_bottle_212698);
+		wumpusId = loadSoundResource(R.raw.wumpus_roar_50802);
 
 	}
 
@@ -64,5 +77,18 @@ public class SoundFacade {
 
 		int mSoundId = clingSounds.get(index);
 		soundEngine.play(mSoundId);
+	}
+
+
+	public void playWumpus() {
+		soundEngine.play(wumpusId);
+	}
+
+	public void playBurn() {
+		soundEngine.play(burnId);
+	}
+
+	public void playGlass() {
+		soundEngine.play(glassId);
 	}
 }
