@@ -1,6 +1,8 @@
 package com.fmatos.crazywallpapers.wallpaper.service;
 
 
+import com.fmatos.crazywallpapers.sound.SoundEngine;
+
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -13,7 +15,10 @@ public class HeatManager {
 	private static final int MAX_SIZE = 20;
 	private final Queue<Point> points; // TODO do we need SQLite to persist values or is it fun on itself?
 
-	public HeatManager() {
+	private final SoundEngine soundEngine;
+
+	public HeatManager(SoundEngine soundEngine) {
+		this.soundEngine = soundEngine;
 		points = new LinkedList(); // TODO need an efficient custom circular buffer implementation
 	}
 
@@ -21,6 +26,7 @@ public class HeatManager {
 
 		if ( points.size() > MAX_SIZE ) {
 			points.remove();
+			soundEngine.play();
 		}
 
 		Point point = new Point(x, y);
