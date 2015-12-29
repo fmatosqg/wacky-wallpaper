@@ -4,15 +4,14 @@
 
     <uses-permission android:name="android.permission.SET_WALLPAPER"/>
 
-
     <application
         android:allowBackup="false"
         android:icon="@android:drawable/arrow_down_float"
-        android:label="Crazy Wallpaper">
+        android:label="@string/app_name">
 
         <!-- Activities -->
         <activity
-            android:name=".view.Preview"
+            android:name=".view.PreviewActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -21,6 +20,33 @@
             </intent-filter>
         </activity>
 
+        <!-- Configuring wallpaper stuff -->
+        <!-- add android:hardwareAccelerated="false" if blur is not nice -->
+        <service
+            android:name=".wallpaper.service.CrazyWallpaperService"
+            android:enabled="true"
+            android:label="@string/wallpaper_description_drawer"
+
+            android:permission="android.permission.BIND_WALLPAPER">
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService">
+                </action>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/crazy_wallpaper">
+            </meta-data>
+        </service>
+
     </application>
+
+
+    <!-- Configuring wallpaper stuff -->
+    <uses-feature
+        android:name="android.software.live_wallpaper"
+        android:required="true">
+    </uses-feature>
+
 
 </manifest>

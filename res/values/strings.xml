@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Crazy Wallpapers</string>
+    <string name="app_name">Crazy Wallpaper</string>
+    <string name="wallpaper_description_drawer">Crazy Wallpaper</string>
+    <string name="wallpaper_description">Crazy Wallpaper for all</string>
 </resources>
