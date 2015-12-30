@@ -36,8 +36,6 @@ public class CrazyWallpaperService extends WallpaperService {
 			paint.setAntiAlias(true);
 			paint.setColor(Color.RED);
 			paint.setStyle(Paint.Style.FILL);
-//			paint.setStrokeJoin(Paint.Join.ROUND);
-			paint.setStrokeWidth(MAGIC_SIZE);
 
 			paint.setMaskFilter(new BlurMaskFilter(MAGIC_SIZE*1.5f, BlurMaskFilter.Blur.NORMAL));
 

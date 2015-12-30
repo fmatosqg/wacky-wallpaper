@@ -21,6 +21,8 @@ public class PreviewActivity extends Activity {
 		setContentView(R.layout.activity_preview);
 
 		ButterKnife.inject(this);
+
+		setWallpaper(); // don't show this screen
 	}
 
 	@OnClick(R.id.btnPreview)

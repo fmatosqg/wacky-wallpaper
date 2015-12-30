@@ -13,17 +13,35 @@ import java.lang.ref.WeakReference;
 public class SoundEngine {
 
 	private static final String TAG = SoundEngine.class.getSimpleName();
+	private static final int MAX_STREAMS = 3;
 
 	private SoundPool mSoundPool;
 	private AudioManager mAudioManager;
-//	private int mSoundId;
+
 	private boolean mCanPlayAudio;
 
+	AudioManager.OnAudioFocusChangeListener afChangeListener;
 	private final WeakReference<Context> context;
 
 	public SoundEngine(Context context) {
 
-		this.context = new WeakReference<Context>(context);;
+		this.context = new WeakReference<Context>(context);
+
+		afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+			@Override
+			public void onAudioFocusChange(int focusChange) {
+
+				if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+					mAudioManager.abandonAudioFocus(afChangeListener);
+					mCanPlayAudio = false;
+					Log.d(TAG,"Audio focus loss");
+				} else if ( focusChange == AudioManager.AUDIOFOCUS_GAIN){
+					mCanPlayAudio = true;
+					Log.d(TAG,"Audio focus gain " + focusChange);
+				}
+
+			}
+		};
 
 		mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
@@ -36,10 +54,9 @@ public class SoundEngine {
 
 	}
 
-
 	private void loadSoundPool() {
 		// Create a SoundPool
-		mSoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+		mSoundPool = new SoundPool(MAX_STREAMS, AudioManager.STREAM_MUSIC, 0);
 
 		// Set an OnLoadCompleteListener on the SoundPool
 		mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
@@ -48,13 +65,8 @@ public class SoundEngine {
 			public void onLoadComplete(SoundPool soundPool, int sampleId,
 									   int status) {
 
-				// If sound loading was successful enable the play Button
-				if (0 == status) {
-					Log.d(TAG, "Sound pool is cool 1");
-				} else {
+				if (0 != status) {
 					Log.i(TAG, "Unable to load sound");
-					Log.d(TAG, "Sound pool is broken 1");
-
 				}
 			}
 		});
@@ -72,7 +84,7 @@ public class SoundEngine {
 						mSoundPool.play(soundId, volume,volume,
 								1, 0, 1.0f);
 					} else {
-						Log.w(TAG,"NULLLLLLL");
+						Log.w(TAG,"Sound pool is null");
 					}
 				}
 			}
@@ -83,22 +95,9 @@ public class SoundEngine {
 
 	}
 
-	// Listen for Audio focus changes
-	AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-		@Override
-		public void onAudioFocusChange(int focusChange) {
-
-			if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-				mAudioManager.abandonAudioFocus(afChangeListener);
-				mCanPlayAudio = false;
-				Log.d(TAG,"Audio focus loss");
-			} else if ( focusChange == AudioManager.AUDIOFOCUS_GAIN){
-				Log.d(TAG,"Audio focus gain " + focusChange);
-			}
-
-		}
-	};
-
+	/**
+	 * Acquire resources
+	 */
 	public void onResume() {
 
 		mAudioManager.setSpeakerphoneOn(true);
@@ -107,7 +106,9 @@ public class SoundEngine {
 		loadSoundPool();
 	}
 
-	// Release resources & clean up
+	/**
+	 * Acquire resources
+	 */
 	public void onPause() {
 
 		if (null != mSoundPool) {
@@ -124,7 +125,7 @@ public class SoundEngine {
 		Log.d(TAG, "Sound pool pause unloaded");
 	}
 
-	public SoundPool getmSoundPool() {
+	public SoundPool getSoundPool() {
 		return mSoundPool;
 	}
 

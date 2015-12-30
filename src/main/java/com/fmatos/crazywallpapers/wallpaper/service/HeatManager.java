@@ -1,8 +1,6 @@
 package com.fmatos.crazywallpapers.wallpaper.service;
 
 
-import android.util.Log;
-
 import com.fmatos.crazywallpapers.sound.SoundFacade;
 
 import java.util.Collection;
@@ -57,7 +55,7 @@ public class HeatManager {
 		return processGrid(point, 1);
 
 
-		// TODO need some worker thread to produce the heat map here
+		// TODO need some worker thread to produce the heat map here?
 
 	}
 
@@ -84,8 +82,6 @@ public class HeatManager {
 			} else if (count > CLING_THRESHOLD) {
 				if (Math.random() > 0.3d) {
 					soundFacade.playCling();
-				} else {
-					Log.i(TAG,"random works");
 				}
 			}
 

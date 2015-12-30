@@ -41,14 +41,14 @@ public class SoundFacade {
 	}
 
 	private void unloadSoundPool() {
-		if (soundEngine.getmSoundPool() != null) {
+		if (soundEngine.getSoundPool() != null) {
 			for ( Integer clingId: clingSounds) {
-				soundEngine.getmSoundPool().unload(clingId);
+				soundEngine.getSoundPool().unload(clingId);
 			}
 
-			soundEngine.getmSoundPool().unload(wumpusId);
-			soundEngine.getmSoundPool().unload(glassId);
-			soundEngine.getmSoundPool().unload(burnId);
+			soundEngine.getSoundPool().unload(wumpusId);
+			soundEngine.getSoundPool().unload(glassId);
+			soundEngine.getSoundPool().unload(burnId);
 		}
 	}
 
@@ -68,7 +68,7 @@ public class SoundFacade {
 	}
 
 	private Integer loadSoundResource(@RawRes int audioResourceId) {
-		return soundEngine.getmSoundPool().load(context.get(), audioResourceId, 1);
+		return soundEngine.getSoundPool().load(context.get(), audioResourceId, 1);
 	}
 
 	public void playCling() {
