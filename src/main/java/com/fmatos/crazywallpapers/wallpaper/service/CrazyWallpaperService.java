@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.service.wallpaper.WallpaperService;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -21,10 +22,13 @@ public class CrazyWallpaperService extends WallpaperService {
 
 	private class CrazyWallpaperEngine extends Engine {
 
-		private static final float MAGIC_SIZE = 30f; // size of the brush
+		private static final float MAGIC_SIZE = 30f; // size of the brush in dp
+		private final float brushSize; // size of the brush in px
+
 		private final HeatManager heatManager;
 		private final Paint paint;
 		private final SoundFacade soundFacade;
+
 
 		public CrazyWallpaperEngine() {
 
@@ -37,7 +41,10 @@ public class CrazyWallpaperService extends WallpaperService {
 			paint.setColor(Color.RED);
 			paint.setStyle(Paint.Style.FILL);
 
-			paint.setMaskFilter(new BlurMaskFilter(MAGIC_SIZE*1.5f, BlurMaskFilter.Blur.NORMAL));
+
+			brushSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, MAGIC_SIZE, getResources().getDisplayMetrics());
+
+			paint.setMaskFilter(new BlurMaskFilter(brushSize *1.5f, BlurMaskFilter.Blur.NORMAL));
 
 		}
 
@@ -67,7 +74,7 @@ public class CrazyWallpaperService extends WallpaperService {
 
 			if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
 //				Log.i(TAG, "Down at " + event.getX() + "," + event.getY());
-				int count = heatManager.addPoint(event.getX(), event.getY());
+				int count = heatManager.addPoint(event.getX(), event.getY(),true);
 
 				draw(count); // TODO need efficient worker thread here
 			}
@@ -87,7 +94,7 @@ public class CrazyWallpaperService extends WallpaperService {
 				}
 
 				for ( Point point : heatManager.getHeatMap() ) {
-					canvas.drawCircle(point.getX(), point.getY(), 20.0f, paint);
+					canvas.drawCircle(point.getX(), point.getY(), brushSize, paint);
 				}
 			} finally {
 				if (canvas != null)

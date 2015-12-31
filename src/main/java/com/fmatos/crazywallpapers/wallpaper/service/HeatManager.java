@@ -42,7 +42,7 @@ public class HeatManager {
 		}
 	}
 
-	public int addPoint(float x, float y) {
+	public int addPoint(float x, float y,boolean canPlaySound) {
 
 		if (points.size() > MAX_SIZE) {
 			processGrid(points.remove(), -1);
@@ -52,10 +52,14 @@ public class HeatManager {
 		Point point = new Point(x, y);
 		points.add(point);
 
-		return processGrid(point, 1);
-
-
 		// TODO need some worker thread to produce the heat map here?
+		int count = processGrid(point, 1);
+
+		if ( canPlaySound ) {
+			playSound(count);
+		}
+
+		return count;
 
 	}
 
@@ -71,23 +75,25 @@ public class HeatManager {
 			//Log.d(TAG,"(" + i + "," + j + ") =  " + grid[i][j] + " / dv = " + dv );
 
 			count = grid[i][j];
-			if (count > CRASH_THRESHOLD) {
-				if (Math.random() > 0.7d) {
-					soundFacade.playGlass();
-				}
-			} else if (count > BURN_THRESHOLD) {
-				if (Math.random() > 0.3d) {
-					soundFacade.playBurn();
-				}
-			} else if (count > CLING_THRESHOLD) {
-				if (Math.random() > 0.3d) {
-					soundFacade.playCling();
-				}
-			}
-
 		}
 
 		return count;
+	}
+
+	private void playSound(int count) {
+		if (count > CRASH_THRESHOLD) {
+			if (Math.random() > 0.7d) {
+				soundFacade.playGlass();
+			}
+		} else if (count > BURN_THRESHOLD) {
+			if (Math.random() > 0.3d) {
+				soundFacade.playBurn();
+			}
+		} else if (count > CLING_THRESHOLD) {
+			if (Math.random() > 0.3d) {
+				soundFacade.playCling();
+			}
+		}
 	}
 
 	public Collection<Point> getHeatMap() {

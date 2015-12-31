@@ -15,12 +15,12 @@ public class SoundEngine {
 	private static final String TAG = SoundEngine.class.getSimpleName();
 	private static final int MAX_STREAMS = 3;
 
-	private SoundPool mSoundPool;
-	private AudioManager mAudioManager;
-
 	private boolean mCanPlayAudio;
 
-	AudioManager.OnAudioFocusChangeListener afChangeListener;
+	private SoundPool mSoundPool;
+	private final AudioManager mAudioManager;
+
+	private final AudioManager.OnAudioFocusChangeListener afChangeListener;
 	private final WeakReference<Context> context;
 
 	public SoundEngine(Context context) {
@@ -31,26 +31,24 @@ public class SoundEngine {
 			@Override
 			public void onAudioFocusChange(int focusChange) {
 
-				if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
-					mAudioManager.abandonAudioFocus(afChangeListener);
-					mCanPlayAudio = false;
-					Log.d(TAG,"Audio focus loss");
-				} else if ( focusChange == AudioManager.AUDIOFOCUS_GAIN){
+				if (focusChange == AudioManager.AUDIOFOCUS_GAIN || focusChange == AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK) {
 					mCanPlayAudio = true;
-					Log.d(TAG,"Audio focus gain " + focusChange);
-				}
+					Log.d(TAG, "Audio focus gain " + focusChange);
 
+				} else {//if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+//					mAudioManager.abandonAudioFocus(afChangeListener);
+					mCanPlayAudio = false;
+					Log.d(TAG, "Audio focus lost on code " + focusChange) ;
+				}
 			}
 		};
 
+
 		mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
-		// Request audio focus
-		int result = mAudioManager.requestAudioFocus(afChangeListener,
-				AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
 		// Set to true if app has audio foucs
-		mCanPlayAudio = AudioManager.AUDIOFOCUS_REQUEST_GRANTED == result;
+//		mCanPlayAudio = AudioManager.AUDIOFOCUS_REQUEST_GRANTED == result;
 
 	}
 
@@ -104,6 +102,14 @@ public class SoundEngine {
 		mAudioManager.loadSoundEffects();
 
 		loadSoundPool();
+
+		// Request audio focus
+		int result = mAudioManager.requestAudioFocus(afChangeListener,
+				AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK); // TODO move this call to when about to play it
+
+		if ( result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+			mCanPlayAudio = true;
+		}
 	}
 
 	/**
@@ -123,6 +129,8 @@ public class SoundEngine {
 		mAudioManager.unloadSoundEffects();
 
 		Log.d(TAG, "Sound pool pause unloaded");
+
+		mAudioManager.abandonAudioFocus(afChangeListener);
 	}
 
 	public SoundPool getSoundPool() {
