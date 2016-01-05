@@ -36,7 +36,6 @@ public class SoundFacade {
 	public void onPause() {
 
 		unloadSoundPool();
-
 		soundEngine.onPause();
 	}
 

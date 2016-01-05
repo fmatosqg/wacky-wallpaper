@@ -10,6 +10,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.fmatos.crazywallpapers.sound.SoundFacade;
+import com.fmatos.crazywallpapers.wallpaper.domain.Grid;
+import com.fmatos.crazywallpapers.wallpaper.domain.HeatManager;
+import com.fmatos.crazywallpapers.wallpaper.domain.Point;
 
 public class CrazyWallpaperService extends WallpaperService {
 
@@ -34,7 +37,7 @@ public class CrazyWallpaperService extends WallpaperService {
 
 			soundFacade = new SoundFacade(getApplicationContext());
 
-			heatManager = new HeatManager(soundFacade);
+			heatManager = new HeatManager(soundFacade, new Grid());
 
 			paint = new Paint();
 			paint.setAntiAlias(true);
@@ -63,7 +66,7 @@ public class CrazyWallpaperService extends WallpaperService {
 		@Override
 		public void onSurfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 			super.onSurfaceChanged(holder, format, width, height);
-			heatManager.onSurfaceChanged(width,height);
+			heatManager.onSurfaceChanged(width, height);
 			draw(0);
 		}
 
@@ -87,13 +90,8 @@ public class CrazyWallpaperService extends WallpaperService {
 			try {
 				canvas.drawColor(Color.BLACK);
 
-				if ( count < 5 ) {
-					paint.setColor(Color.BLUE);
-				} else {
-					paint.setColor(Color.RED);
-				}
-
 				for ( Point point : heatManager.getHeatMap() ) {
+					paint.setColor(point.getColor());
 					canvas.drawCircle(point.getX(), point.getY(), brushSize, paint);
 				}
 			} finally {
