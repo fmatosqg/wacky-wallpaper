@@ -1,5 +1,7 @@
 package com.fmatos.crazywallpapers.wallpaper.domain;
 
+import android.util.Log;
+
 import com.fmatos.crazywallpapers.sound.SoundFacade;
 
 import java.util.Collection;
@@ -18,21 +20,26 @@ public class HeatManager {
 
 
 	private final SoundFacade soundFacade;
+	private final Screen screen;
 
-	private final Grid theGrid;
-
-	public HeatManager(SoundFacade soundFacade, Grid theGrid) {
+	public HeatManager(SoundFacade soundFacade, Screen screen) {
 		this.soundFacade = soundFacade;
-		this.theGrid = theGrid;
-
+		this.screen = screen;
 	}
 
 	public int addPoint(float x, float y, boolean canPlaySound) {
 
-		int count = theGrid.addPoint(x, y);
+		int count = 0;
 
-		if (canPlaySound) {
-			playSound(count);
+		try {
+			count = screen.addPoint(x, y);
+
+			if (canPlaySound) {
+				playSound(count);
+			}
+		} catch (Grid.GridEdgeOverflowException e) {
+			// nothing to see here, report error
+			Log.i(TAG,"Error adding point");
 		}
 
 		return count;
@@ -55,10 +62,10 @@ public class HeatManager {
 	}
 
 	public Collection<Point> getHeatMap() {
-		return theGrid.getPoints();
+		return screen.getPoints();
 	}
 
 	public void onSurfaceChanged(int width, int height) {
-		theGrid.onSurfaceChanged(width, height);
+		screen.onSurfaceChanged(height, width);
 	}
 }

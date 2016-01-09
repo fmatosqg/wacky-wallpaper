@@ -11,7 +11,7 @@ import java.util.Queue;
 public class Grid {
 
 	private static final int GRID_DIMENSION = 5;
-	private static final int MAX_SIZE = 50;
+	private static final int MAX_SIZE = 50; // amount of stored points
 
 
 	private final Queue<Point> points; // TODO do we need SQLite to persist values or is it fun on itself?
@@ -39,13 +39,9 @@ public class Grid {
 
 		Point point = new Point(x, y, Color.YELLOW );
 
-
 		// TODO need some worker thread to produce the heat map here?
+		checkOverflowed();
 		int count = processGrid(point, 1);
-
-		if (points.size() > MAX_SIZE) {
-			count = processGrid(points.remove(), -1);
-		}
 
 		int color;
 
@@ -61,18 +57,16 @@ public class Grid {
 			color = Color.YELLOW;
 		}
 
-
 		Point newPoint = new Point(x,y,color);
 		points.add(newPoint);
 
 		return count;
 	}
 
-	public Point overflowed() {
+	private void checkOverflowed() {
 		if (points.size() > MAX_SIZE) {
+			processGrid(points.remove(), -1);
 		}
-
-		return null;
 	}
 
 
@@ -88,17 +82,26 @@ public class Grid {
 			//Log.d(TAG,"(" + i + "," + j + ") =  " + grid[i][j] + " / dv = " + dv );
 
 			count = grid[i][j];
+		} else {
+			throw new GridEdgeOverflowException("Beyond edge at " + i + "," + j);
 		}
 
 		return count;
 	}
 
-	public void onSurfaceChanged(int width, int height) {
+	public void onSurfaceChanged(int height,int width) {
 		this.width = width;
 		this.height = height;
 	}
 
 	public Queue<Point> getPoints() {
 		return points;
+	}
+
+	public static class GridEdgeOverflowException extends RuntimeException {
+
+		public GridEdgeOverflowException(String s) {
+			super(s);
+		}
 	}
 }

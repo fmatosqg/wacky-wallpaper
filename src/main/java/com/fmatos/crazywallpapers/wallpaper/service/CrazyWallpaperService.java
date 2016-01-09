@@ -10,9 +10,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
 import com.fmatos.crazywallpapers.sound.SoundFacade;
-import com.fmatos.crazywallpapers.wallpaper.domain.Grid;
 import com.fmatos.crazywallpapers.wallpaper.domain.HeatManager;
 import com.fmatos.crazywallpapers.wallpaper.domain.Point;
+import com.fmatos.crazywallpapers.wallpaper.domain.Screen;
 
 public class CrazyWallpaperService extends WallpaperService {
 
@@ -37,7 +37,7 @@ public class CrazyWallpaperService extends WallpaperService {
 
 			soundFacade = new SoundFacade(getApplicationContext());
 
-			heatManager = new HeatManager(soundFacade, new Grid());
+			heatManager = new HeatManager(soundFacade, new Screen());
 
 			paint = new Paint();
 			paint.setAntiAlias(true);
